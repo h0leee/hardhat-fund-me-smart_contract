@@ -1,4 +1,6 @@
-const { run } = require("hardhat")
+// criar uma folder com verify, uma vez que é usada em vaáios deploys
+
+const { run } = require("hardhat") 
 
 const verify = async (contractAddress, args) => {
   console.log("Verifying contract...")

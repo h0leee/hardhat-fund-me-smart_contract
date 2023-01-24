@@ -8,13 +8,13 @@ const { developmentChains } = require("../../helper-hardhat-config")
           let fundMe
           let mockV3Aggregator
           let deployer
-          const sendValue = ethers.utils.parseEther("1")
+          const sendValue = ethers.utils.parseEther("1") // 1 eth, convertido a mais 18 casas decimais
           beforeEach(async () => {
               // const accounts = await ethers.getSigners()
               // deployer = accounts[0]
-              deployer = (await getNamedAccounts()).deployer
-              await deployments.fixture(["all"])
-              fundMe = await ethers.getContract("FundMe", deployer)
+              deployer = (await getNamedAccounts()).deployer // ???
+              await deployments.fixture(["all"]) // vai dar deploy de todos os contratcos na deploy folder
+              fundMe = await ethers.getContract("FundMe", deployer) // dá-me o mais recente deployment de fundme, from deployer 
               mockV3Aggregator = await ethers.getContract(
                   "MockV3Aggregator",
                   deployer
@@ -32,14 +32,14 @@ const { developmentChains } = require("../../helper-hardhat-config")
               // https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
               // could also do assert.fail
               it("Fails if you don't send enough ETH", async () => {
-                  await expect(fundMe.fund()).to.be.revertedWith(
+                  await expect(fundMe.fund()).to.be.revertedWith( // se der erro, como não passei eth suficiente, o teste vai estar certo
                       "You need to spend more ETH!"
                   )
               })
               // we could be even more precise here by making sure exactly $50 works
               // but this is good enough for now
               it("Updates the amount funded data structure", async () => {
-                  await fundMe.fund({ value: sendValue })
+                  await fundMe.fund({ value: sendValue }) 
                   const response = await fundMe.getAddressToAmountFunded(
                       deployer
                   )
@@ -58,21 +58,21 @@ const { developmentChains } = require("../../helper-hardhat-config")
               it("withdraws ETH from a single funder", async () => {
                   // Arrange
                   const startingFundMeBalance =
-                      await fundMe.provider.getBalance(fundMe.address)
+                      await fundMe.provider.getBalance(fundMe.address) // dinheiro inicial no contrato
                   const startingDeployerBalance =
-                      await fundMe.provider.getBalance(deployer)
+                      await fundMe.provider.getBalance(deployer) // dinheiro inicial do deployer
 
                   // Act
                   const transactionResponse = await fundMe.withdraw()
                   const transactionReceipt = await transactionResponse.wait()
                   const { gasUsed, effectiveGasPrice } = transactionReceipt
-                  const gasCost = gasUsed.mul(effectiveGasPrice)
+                  const gasCost = gasUsed.mul(effectiveGasPrice) // big numbers tem de ser .add, .mul, etc
 
-                  const endingFundMeBalance = await fundMe.provider.getBalance(
+                  const endingFundMeBalance = await fundMe.provider.getBalance( // dinheiro final no contrato
                       fundMe.address
                   )
                   const endingDeployerBalance =
-                      await fundMe.provider.getBalance(deployer)
+                      await fundMe.provider.getBalance(deployer) // dinheiro final do deployer
 
                   // Assert
                   // Maybe clean up to understand the testing
@@ -86,14 +86,14 @@ const { developmentChains } = require("../../helper-hardhat-config")
               })
               // this test is overloaded. Ideally we'd split it into multiple tests
               // but for simplicity we left it as one
-              it("is allows us to withdraw with multiple funders", async () => {
+              it("it allows us to withdraw with multiple funders", async () => {
                   // Arrange
                   const accounts = await ethers.getSigners()
                   for (i = 1; i < 6; i++) {
-                      const fundMeConnectedContract = await fundMe.connect(
+                      const fundMeConnectedContract = await fundMe.connect( // connect vai fazer com que se inicialize novo contrato em que a conexão não vai ser om o deployer mas com cada uma das accounts da network
                           accounts[i]
                       )
-                      await fundMeConnectedContract.fund({ value: sendValue })
+                      await fundMeConnectedContract.fund({ value: sendValue }) // cada um recebe 1 eth
                   }
                   const startingFundMeBalance =
                       await fundMe.provider.getBalance(fundMe.address)
@@ -106,7 +106,7 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   // const transactionResponse = await fundMe.withdraw()
                   const transactionReceipt = await transactionResponse.wait()
                   const { gasUsed, effectiveGasPrice } = transactionReceipt
-                  const withdrawGasCost = gasUsed.mul(effectiveGasPrice)
+                  const withdrawGasCost = gasUsed.mul(effectiveGasPrice) 
                   console.log(`GasCost: ${withdrawGasCost}`)
                   console.log(`GasUsed: ${gasUsed}`)
                   console.log(`GasPrice: ${effectiveGasPrice}`)

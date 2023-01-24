@@ -1,3 +1,6 @@
+// vai ser usado para testar localmente porque não há address de PriceFeed
+
+
 const { network } = require("hardhat")
 
 const DECIMALS = "8"
@@ -8,12 +11,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const chainId = network.config.chainId
     // If we are on a local development network, we need to deploy mocks!
     if (chainId == 31337) {
-        log("Local network detected! Deploying mocks...")
+        log("Local network detected! Deploying mocks...") 
         await deploy("MockV3Aggregator", {
             contract: "MockV3Aggregator",
             from: deployer,
             log: true,
-            args: [DECIMALS, INITIAL_PRICE],
+            args: [DECIMALS, INITIAL_PRICE], // vão ser argumentos da função constructor do teste Mockv3aggregator
         })
         log("Mocks Deployed!")
         log("------------------------------------------------")

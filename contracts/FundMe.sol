@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 // 1. Pragma
 pragma solidity ^0.8.7;
+
+
 // 2. Imports
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"; // aggregator receive updates from the oracle network (dados do mundo real), they store data on-chain so that consumers can retrieve it
 import "./PriceConverter.sol";
 
-// 3. Interfaces, Libraries, Contracts
-error FundMe__NotOwner();
+// 3. Error codes, Interfaces, Libraries, Contracts
+error FundMe__NotOwner(); // nestes erros, meto nome do contrato, dois underscores e o erro, pq no futuro posso estar a testar vários contratos
 
 /**@title A sample Funding Contract
  * @author Patrick Collins
@@ -15,21 +17,21 @@ error FundMe__NotOwner();
  */
 contract FundMe {
     // Type Declarations
-    using PriceConverter for uint256;
+    using PriceConverter for uint256; // Priceconverter vai servir como uma library
 
     // State variables
     uint256 public constant MINIMUM_USD = 50 * 10**18;
     address private immutable i_owner;
     address[] private s_funders;
     mapping(address => uint256) private s_addressToAmountFunded;
-    AggregatorV3Interface private s_priceFeed;
+    AggregatorV3Interface private s_priceFeed;  // global variable
 
     // Events (we have none!)
 
     // Modifiers
     modifier onlyOwner() {
         // require(msg.sender == i_owner);
-        if (msg.sender != i_owner) revert FundMe__NotOwner();
+        if (msg.sender != i_owner) revert FundMe__NotOwner(); 
         _;
     }
 
@@ -43,7 +45,7 @@ contract FundMe {
     //// private
     //// view / pure
 
-    constructor(address priceFeed) {
+    constructor(address priceFeed) { // address do preço dependente da network em que estamos
         s_priceFeed = AggregatorV3Interface(priceFeed);
         i_owner = msg.sender;
     }
@@ -102,7 +104,7 @@ contract FundMe {
         returns (uint256)
     {
         return s_addressToAmountFunded[fundingAddress];
-    }
+    } 
 
     function getVersion() public view returns (uint256) {
         return s_priceFeed.version();
@@ -112,7 +114,7 @@ contract FundMe {
         return s_funders[index];
     }
 
-    function getOwner() public view returns (address) {
+    function getOwner() public view returns (address) { // criamos estas funções para gastarmos menos gas pq variáveis públicas gastam mais
         return i_owner;
     }
 

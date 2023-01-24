@@ -33,7 +33,7 @@ module.exports = {
             blockConfirmations: 6,
         },
     },
-    solidity: {
+    solidity: {  // para permitir cmpilar com várias versões de solidity
         compilers: [
             {
                 version: "0.8.7",
@@ -50,10 +50,10 @@ module.exports = {
     },
     gasReporter: {
         enabled: true,
-        currency: "USD",
+        currency: "EUR",
         outputFile: "gas-report.txt",
         noColors: true,
-        // coinmarketcap: COINMARKETCAP_API_KEY,
+        coinmarketcap: COINMARKETCAP_API_KEY,
     },
     namedAccounts: {
         deployer: {

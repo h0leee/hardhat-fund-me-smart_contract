@@ -1,14 +1,19 @@
-const { assert } = require("chai")
+ const { assert } = require("chai") // nestes testes não precisamos da mock porque vamos estar a testar numa testnet
 const { network, ethers, getNamedAccounts } = require("hardhat")
 const { developmentChains } = require("../../helper-hardhat-config")
 
+// o que faz ?
+// let variable = false
+// let somevar = variable ? 'yes' : 'no'
+// if (variable) {somevar = 'yes'} else {somevar = 'no'} estas dauas últimas fazem o mesmo 
+
 developmentChains.includes(network.name)
     ? describe.skip
-    : describe("FundMe Staging Tests", function () {
+    : describe("FundMe Staging Tests", function () { // isto só vai correr se não estivermos numa development chain
           let deployer
           let fundMe
           const sendValue = ethers.utils.parseEther("0.1")
-          beforeEach(async () => {
+          beforeEach(async () => { 
               deployer = (await getNamedAccounts()).deployer
               fundMe = await ethers.getContract("FundMe", deployer)
           })
